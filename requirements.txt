@@ -1,0 +1,13 @@
+# Target App (Mock Banking Application)
+flask==3.0.0
+
+# Browser Automation
+playwright==1.44.0
+
+# LLM Integration
+openai==1.35.0
+
+# Utilities
+pydantic==2.7.0
+pyyaml==6.0.1
+Pillow==10.3.0
