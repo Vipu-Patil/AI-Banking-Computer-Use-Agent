@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head><title>Member Details</title></head>
+<body bgcolor="#F0F0F0" style="margin: 0;">
+
+<!-- Top banner -->
+<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#E8E8E8">
+    <tr>
+        <td style="padding: 8px 15px;">
+            <font face="Arial" size="2" color="#003366"><b>CreditUnion Core</b> &mdash; Member Details</font>
+        </td>
+        <td align="right" style="padding: 8px 15px;">
+            <font face="Arial" size="1" color="#666666">
+                <a href="/member/search" target="content" style="color: #003366;">New Search</a> |
+                <a href="/home" target="content" style="color: #003366;">Home</a>
+            </font>
+        </td>
+    </tr>
+</table>
+<hr size="1" color="#CCCCCC" noshade>
+
+<!-- Breadcrumb -->
+<table width="95%" align="center" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td style="padding: 5px 0;">
+            <font face="Arial" size="1" color="#999999">
+                Home &gt; Member Services &gt; Member Search &gt;
+                <font color="#003366">Member {{ member.id }}</font>
+            </font>
+        </td>
+    </tr>
+</table>
+
+<!-- Member Info Section — nested tables, no IDs -->
+<table width="95%" align="center" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td>
+            <!-- Member header -->
+            <table cellpadding="8" cellspacing="1" border="0" bgcolor="#CCCCCC" width="100%">
+                <tr bgcolor="#003366">
+                    <td>
+                        <font face="Arial" size="2" color="#FFFFFF">
+                            <b>Member Information</b>
+                        </font>
+                    </td>
+                    <td align="right">
+                        <font face="Arial" size="1" color="#AACCEE">
+                            Status:
+                            {% if member.status == "Active" %}
+                            <font color="#66FF66"><b>{{ member.status }}</b></font>
+                            {% else %}
+                            <font color="#FF6666"><b>{{ member.status }}</b></font>
+                            {% endif %}
+                        </font>
+                    </td>
+                </tr>
+                <tr bgcolor="#FFFFFF">
+                    <td colspan="2" style="padding: 15px;">
+                        <table cellpadding="4" cellspacing="0" border="0" width="100%">
+                            <tr>
+                                <td width="150" valign="top">
+                                    <table cellpadding="3" cellspacing="0" border="0">
+                                        <tr>
+                                            <td align="right"><font face="Arial" size="2" color="#666666">Member ID:</font></td>
+                                            <td><font face="Arial" size="2"><b>{{ member.id }}</b></font></td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right"><font face="Arial" size="2" color="#666666">Name:</font></td>
+                                            <td><font face="Arial" size="2"><b>{{ member.first_name }} {{ member.last_name }}</b></font></td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right"><font face="Arial" size="2" color="#666666">SSN (last 4):</font></td>
+                                            <td><font face="Arial" size="2">***-**-{{ member.ssn_last4 }}</font></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td valign="top">
+                                    <table cellpadding="3" cellspacing="0" border="0">
+                                        <tr>
+                                            <td align="right"><font face="Arial" size="2" color="#666666">DOB:</font></td>
+                                            <td><font face="Arial" size="2">{{ member.dob }}</font></td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right"><font face="Arial" size="2" color="#666666">Phone:</font></td>
+                                            <td><font face="Arial" size="2">{{ member.phone }}</font></td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right"><font face="Arial" size="2" color="#666666">Email:</font></td>
+                                            <td><font face="Arial" size="2">{{ member.email }}</font></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <br>
+
+            <!-- Accounts Section -->
+            <table cellpadding="8" cellspacing="1" border="0" bgcolor="#CCCCCC" width="100%">
+                <tr bgcolor="#003366">
+                    <td colspan="4">
+                        <font face="Arial" size="2" color="#FFFFFF"><b>Account Summary</b></font>
+                    </td>
+                </tr>
+                <tr bgcolor="#E0E0E0">
+                    <td width="30%"><font face="Arial" size="2"><b>Account Type</b></font></td>
+                    <td width="30%"><font face="Arial" size="2"><b>Account Number</b></font></td>
+                    <td width="25%"><font face="Arial" size="2"><b>Balance</b></font></td>
+                    <td width="15%"><font face="Arial" size="2"><b>Action</b></font></td>
+                </tr>
+                {% for account in member.accounts %}
+                <tr bgcolor="{% if loop.index is odd %}#FFFFFF{% else %}#F5F5F5{% endif %}">
+                    <td><font face="Arial" size="2">{{ account.type }}</font></td>
+                    <td><font face="Arial" size="2">{{ account.number }}</font></td>
+                    <td><font face="Arial" size="2"><b>{{ account.balance }}</b></font></td>
+                    <td>
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                                <td bgcolor="#336699" style="padding: 2px 8px; cursor: pointer;"
+                                    onclick="window.location.href='/member/{{ member.id }}/accounts'">
+                                    <font face="Arial" size="1" color="#FFFFFF">View</font>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+
+            <br>
+
+            <!-- Action buttons — again, nested tables as buttons -->
+            <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td>
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                                <td bgcolor="#003366" style="padding: 5px 15px; cursor: pointer;"
+                                    onclick="window.location.href='/member/{{ member.id }}/open-subaccount'">
+                                    <font face="Arial" size="2" color="#FFFFFF"><b>Open Sub-Account</b></font>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td width="10"></td>
+                    <td>
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                                <td bgcolor="#666666" style="padding: 5px 15px; cursor: pointer;"
+                                    onclick="window.location.href='/member/search'">
+                                    <font face="Arial" size="2" color="#FFFFFF">Back to Search</font>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

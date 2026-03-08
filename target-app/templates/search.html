@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head><title>Member Search</title></head>
+<body bgcolor="#F0F0F0" style="margin: 0;">
+
+<!-- Top banner -->
+<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#E8E8E8">
+    <tr>
+        <td style="padding: 8px 15px;">
+            <font face="Arial" size="2" color="#003366"><b>CreditUnion Core</b> &mdash; Member Search</font>
+        </td>
+        <td align="right" style="padding: 8px 15px;">
+            <font face="Arial" size="1" color="#666666">
+                <a href="/home" target="content" style="color: #003366;">Home</a> |
+                Session: Active
+            </font>
+        </td>
+    </tr>
+</table>
+<hr size="1" color="#CCCCCC" noshade>
+
+<!-- Breadcrumb — nested table, no semantic nav -->
+<table width="95%" align="center" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td style="padding: 5px 0;">
+            <font face="Arial" size="1" color="#999999">
+                Home &gt; Member Services &gt; <font color="#003366">Member Search</font>
+            </font>
+        </td>
+    </tr>
+</table>
+
+<!-- Search form — deeply nested tables, no test IDs, font tags everywhere -->
+<table width="95%" align="center" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td>
+            <table cellpadding="8" cellspacing="1" border="0" bgcolor="#CCCCCC" width="500">
+                <tr bgcolor="#003366">
+                    <td colspan="3">
+                        <font face="Arial" size="2" color="#FFFFFF"><b>Search Member</b></font>
+                    </td>
+                </tr>
+                <tr bgcolor="#FFFFFF">
+                    <td colspan="3" style="padding: 15px;">
+                        <form action="/member/results" method="get">
+                            <table cellpadding="4" cellspacing="0" border="0">
+                                <tr>
+                                    <td align="right">
+                                        <font face="Arial" size="2">Member ID:</font>
+                                    </td>
+                                    <td>
+                                        <input type="text" name="member_id" size="20" maxlength="10"
+                                               style="font-family: Arial; font-size: 12px; border: 1px solid #999; padding: 3px;">
+                                    </td>
+                                    <td>
+                                        <!-- No id, no data-testid, just a nested table with onclick-style submit -->
+                                        <table cellpadding="0" cellspacing="0" border="0">
+                                            <tr>
+                                                <td bgcolor="#003366" style="padding: 4px 12px; cursor: pointer;"
+                                                    onclick="this.closest('form').submit();">
+                                                    <font face="Arial" size="2" color="#FFFFFF"><b>Search</b></font>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                {% if error %}
+                                <tr>
+                                    <td></td>
+                                    <td colspan="2">
+                                        <font face="Arial" size="2" color="#CC0000"><b>{{ error }}</b></font>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                <tr>
+                                    <td></td>
+                                    <td colspan="2">
+                                        <font face="Arial" size="1" color="#999999">
+                                            Enter the 5-digit member ID and click Search.
+                                        </font>
+                                    </td>
+                                </tr>
+                            </table>
+                        </form>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+<br>
+<table width="95%" align="center" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td>
+            <font face="Arial" size="1" color="#AAAAAA">
+                &bull; For SSN-based lookup, contact your supervisor.<br>
+                &bull; Cross-branch lookups require manager approval.
+            </font>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>
