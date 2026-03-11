@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head><title>Confirmation</title></head>
+<body bgcolor="#F0F0F0" style="margin: 0;">
+
+<!-- Top banner -->
+<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#E8E8E8">
+    <tr>
+        <td style="padding: 8px 15px;">
+            <font face="Arial" size="2" color="#003366"><b>CreditUnion Core</b> &mdash; Confirmation</font>
+        </td>
+        <td align="right" style="padding: 8px 15px;">
+            <font face="Arial" size="1" color="#666666">
+                <a href="/member/results?member_id={{ member.id }}" target="content" style="color: #003366;">Back to Member</a> |
+                <a href="/member/search" target="content" style="color: #003366;">New Search</a>
+            </font>
+        </td>
+    </tr>
+</table>
+<hr size="1" color="#CCCCCC" noshade>
+
+<!-- Success message -->
+<table width="95%" align="center" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td style="padding: 15px 0;">
+            <table cellpadding="10" cellspacing="0" border="0" bgcolor="#EEFFEE" width="100%"
+                   style="border: 1px solid #009900;">
+                <tr>
+                    <td>
+                        <font face="Arial" size="2" color="#006600">
+                            <b>&#10004; Sub-Account Created Successfully</b>
+                        </font>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+<!-- Confirmation details — nested tables -->
+<table width="95%" align="center" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td>
+            <table cellpadding="8" cellspacing="1" border="0" bgcolor="#CCCCCC" width="100%">
+                <tr bgcolor="#003366">
+                    <td colspan="2">
+                        <font face="Arial" size="2" color="#FFFFFF"><b>New Account Details</b></font>
+                    </td>
+                </tr>
+                <tr bgcolor="#FFFFFF">
+                    <td style="padding: 15px;" colspan="2">
+                        <table cellpadding="5" cellspacing="0" border="0">
+                            <tr>
+                                <td align="right"><font face="Arial" size="2" color="#666666">Member:</font></td>
+                                <td><font face="Arial" size="2"><b>{{ member.first_name }} {{ member.last_name }} ({{ member.id }})</b></font></td>
+                            </tr>
+                            <tr>
+                                <td align="right"><font face="Arial" size="2" color="#666666">Account Type:</font></td>
+                                <td><font face="Arial" size="2"><b>{{ action.account_type }}</b></font></td>
+                            </tr>
+                            <tr>
+                                <td align="right"><font face="Arial" size="2" color="#666666">Account Number:</font></td>
+                                <td><font face="Arial" size="2"><b>{{ new_account_number }}</b></font></td>
+                            </tr>
+                            <tr>
+                                <td align="right"><font face="Arial" size="2" color="#666666">Initial Deposit:</font></td>
+                                <td><font face="Arial" size="2"><b>${{ action.initial_deposit }}</b></font></td>
+                            </tr>
+                            {% if action.nickname %}
+                            <tr>
+                                <td align="right"><font face="Arial" size="2" color="#666666">Nickname:</font></td>
+                                <td><font face="Arial" size="2">{{ action.nickname }}</font></td>
+                            </tr>
+                            {% endif %}
+                            <tr>
+                                <td align="right"><font face="Arial" size="2" color="#666666">Status:</font></td>
+                                <td><font face="Arial" size="2" color="#006600"><b>Active</b></font></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <br>
+
+            <!-- Action buttons -->
+            <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td>
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                                <td bgcolor="#003366" style="padding: 5px 15px; cursor: pointer;"
+                                    onclick="window.location.href='/member/results?member_id={{ member.id }}'">
+                                    <font face="Arial" size="2" color="#FFFFFF"><b>Return to Member</b></font>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td width="10"></td>
+                    <td>
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                                <td bgcolor="#666666" style="padding: 5px 15px; cursor: pointer;"
+                                    onclick="window.location.href='/member/search'">
+                                    <font face="Arial" size="2" color="#FFFFFF">New Search</font>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

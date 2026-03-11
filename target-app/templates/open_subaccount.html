@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head><title>Open Sub-Account</title></head>
+<body bgcolor="#F0F0F0" style="margin: 0;">
+
+<!-- Top banner -->
+<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#E8E8E8">
+    <tr>
+        <td style="padding: 8px 15px;">
+            <font face="Arial" size="2" color="#003366"><b>CreditUnion Core</b> &mdash; Open Sub-Account</font>
+        </td>
+        <td align="right" style="padding: 8px 15px;">
+            <font face="Arial" size="1" color="#666666">
+                <a href="/member/results?member_id={{ member.id }}" target="content" style="color: #003366;">Back to Member</a>
+            </font>
+        </td>
+    </tr>
+</table>
+<hr size="1" color="#CCCCCC" noshade>
+
+<table width="95%" align="center" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td style="padding: 5px 0;">
+            <font face="Arial" size="1" color="#999999">
+                Home &gt; Member Services &gt; Member {{ member.id }} &gt;
+                <font color="#003366">Open Sub-Account</font>
+            </font>
+        </td>
+    </tr>
+</table>
+
+<!-- Error display -->
+{% if errors %}
+<table width="95%" align="center" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td>
+            <table cellpadding="8" cellspacing="0" border="0" bgcolor="#FFEEEE" width="100%"
+                   style="border: 1px solid #CC0000;">
+                <tr>
+                    <td>
+                        <font face="Arial" size="2" color="#CC0000"><b>Please correct the following errors:</b></font><br>
+                        {% for err in errors %}
+                        <font face="Arial" size="2" color="#CC0000">&bull; {{ err }}</font><br>
+                        {% endfor %}
+                    </td>
+                </tr>
+            </table>
+            <br>
+        </td>
+    </tr>
+</table>
+{% endif %}
+
+<!-- Sub-account form — nested tables, no IDs -->
+<table width="95%" align="center" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td>
+            <table cellpadding="8" cellspacing="1" border="0" bgcolor="#CCCCCC" width="550">
+                <tr bgcolor="#003366">
+                    <td colspan="2">
+                        <font face="Arial" size="2" color="#FFFFFF">
+                            <b>Open New Sub-Account for {{ member.first_name }} {{ member.last_name }}</b>
+                        </font>
+                    </td>
+                </tr>
+                <tr bgcolor="#FFFFFF">
+                    <td colspan="2" style="padding: 15px;">
+                        <form action="/member/{{ member.id }}/open-subaccount" method="post">
+                            <table cellpadding="6" cellspacing="0" border="0">
+                                <tr>
+                                    <td align="right" valign="top">
+                                        <font face="Arial" size="2">Account Type:</font>
+                                        <font face="Arial" size="2" color="#CC0000">*</font>
+                                    </td>
+                                    <td>
+                                        <select name="account_type"
+                                                style="font-family: Arial; font-size: 12px; border: 1px solid #999; padding: 3px; width: 200px;">
+                                            <option value="">-- Select --</option>
+                                            <option value="Savings" {% if account_type == "Savings" %}selected{% endif %}>Savings</option>
+                                            <option value="Checking" {% if account_type == "Checking" %}selected{% endif %}>Checking</option>
+                                            <option value="Money Market" {% if account_type == "Money Market" %}selected{% endif %}>Money Market</option>
+                                            <option value="Holiday Club" {% if account_type == "Holiday Club" %}selected{% endif %}>Holiday Club</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="right">
+                                        <font face="Arial" size="2">Initial Deposit ($):</font>
+                                        <font face="Arial" size="2" color="#CC0000">*</font>
+                                    </td>
+                                    <td>
+                                        <input type="text" name="initial_deposit" size="15"
+                                               value="{{ initial_deposit or '' }}"
+                                               style="font-family: Arial; font-size: 12px; border: 1px solid #999; padding: 3px;">
+                                        <font face="Arial" size="1" color="#999999">(min $25.00)</font>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="right">
+                                        <font face="Arial" size="2">Account Nickname:</font>
+                                    </td>
+                                    <td>
+                                        <input type="text" name="nickname" size="25"
+                                               value="{{ nickname or '' }}"
+                                               style="font-family: Arial; font-size: 12px; border: 1px solid #999; padding: 3px;">
+                                        <font face="Arial" size="1" color="#999999">(optional)</font>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td style="padding-top: 10px;">
+                                        <table cellpadding="0" cellspacing="0" border="0">
+                                            <tr>
+                                                <td>
+                                                    <table cellpadding="0" cellspacing="0" border="0">
+                                                        <tr>
+                                                            <td bgcolor="#003366" style="padding: 5px 15px; cursor: pointer;"
+                                                                onclick="this.closest('form').submit();">
+                                                                <font face="Arial" size="2" color="#FFFFFF"><b>Submit</b></font>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td width="10"></td>
+                                                <td>
+                                                    <table cellpadding="0" cellspacing="0" border="0">
+                                                        <tr>
+                                                            <td bgcolor="#999999" style="padding: 5px 15px; cursor: pointer;"
+                                                                onclick="window.location.href='/member/results?member_id={{ member.id }}'">
+                                                                <font face="Arial" size="2" color="#FFFFFF">Cancel</font>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </form>
+                    </td>
+                </tr>
+            </table>
+
+            <br>
+            <font face="Arial" size="1" color="#999999">
+                <font color="#CC0000">*</font> Required fields.<br>
+                Sub-account will be linked to the primary member account.<br>
+                This action requires supervisor approval for amounts over $50,000.
+            </font>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>
