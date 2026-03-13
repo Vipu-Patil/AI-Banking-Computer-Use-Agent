@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head><title>Account Frozen</title></head>
+<body bgcolor="#F0F0F0" style="margin: 0;">
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#E8E8E8">
+    <tr>
+        <td style="padding: 8px 15px;">
+            <font face="Arial" size="2" color="#003366"><b>CreditUnion Core</b> &mdash; Account Status</font>
+        </td>
+    </tr>
+</table>
+<hr size="1" color="#CCCCCC" noshade>
+
+<table width="95%" align="center" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td style="padding: 30px 0;">
+            <table cellpadding="12" cellspacing="0" border="0" bgcolor="#FFF0E0" width="100%"
+                   style="border: 1px solid #CC6600;">
+                <tr>
+                    <td>
+                        <font face="Arial" size="2" color="#CC6600">
+                            <b>&#9888; Account Frozen</b><br><br>
+                            Member <b>{{ member.first_name }} {{ member.last_name }} ({{ member.id }})</b>
+                            has a frozen account status.<br>
+                            Account operations are restricted until the freeze is lifted.<br><br>
+                            <font size="1">
+                                Reason: Pending review<br>
+                                Frozen since: 08/15/2026<br>
+                                Contact: Compliance Department
+                            </font>
+                        </font>
+                    </td>
+                </tr>
+            </table>
+            <br>
+            <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td bgcolor="#003366" style="padding: 5px 15px; cursor: pointer;"
+                        onclick="window.location.href='/member/results?member_id={{ member.id }}'">
+                        <font face="Arial" size="2" color="#FFFFFF"><b>Back to Member</b></font>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>
