@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head><title>Member Not Found</title></head>
+<body bgcolor="#F0F0F0" style="margin: 0;">
+
+<!-- Top banner -->
+<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#E8E8E8">
+    <tr>
+        <td style="padding: 8px 15px;">
+            <font face="Arial" size="2" color="#003366"><b>CreditUnion Core</b> &mdash; Search Results</font>
+        </td>
+        <td align="right" style="padding: 8px 15px;">
+            <font face="Arial" size="1" color="#666666">
+                <a href="/member/search" target="content" style="color: #003366;">New Search</a> |
+                <a href="/home" target="content" style="color: #003366;">Home</a>
+            </font>
+        </td>
+    </tr>
+</table>
+<hr size="1" color="#CCCCCC" noshade>
+
+<table width="95%" align="center" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td style="padding: 20px 0;">
+            <table cellpadding="10" cellspacing="0" border="0" bgcolor="#FFF8E0" width="100%"
+                   style="border: 1px solid #CC9900;">
+                <tr>
+                    <td>
+                        <font face="Arial" size="2" color="#996600">
+                            <b>&#9888; No Member Found</b><br><br>
+                            No member record was found for Member ID: <b>{{ member_id }}</b>.<br>
+                            Please verify the Member ID and try again.
+                        </font>
+                    </td>
+                </tr>
+            </table>
+            <br>
+            <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td bgcolor="#003366" style="padding: 5px 15px; cursor: pointer;"
+                        onclick="window.location.href='/member/search'">
+                        <font face="Arial" size="2" color="#FFFFFF"><b>Back to Search</b></font>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>
