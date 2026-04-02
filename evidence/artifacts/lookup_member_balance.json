@@ -1,0 +1,224 @@
+{
+  "id": "lookup_member_balance",
+  "name": "Look Up Member Balance",
+  "description": "Search for a member by ID and extract their name and savings account balance. This is the most common servicing operation — a calling agent uses it to answer balance inquiries.",
+
+  "inputs": [
+    {
+      "name": "member_id",
+      "type": "string",
+      "required": true,
+      "default": null,
+      "description": "The 5-digit member ID to look up",
+      "sensitive": false
+    }
+  ],
+
+  "outputs": [
+    {
+      "name": "member_name",
+      "type": "string",
+      "description": "The member's full name (first + last)",
+      "extract_from": {
+        "locators": [
+          {"strategy": "xpath", "value": "//font[contains(text(),'Member ID')]/ancestor::table//td[contains(.,'Name:')]/following-sibling::td//font/b", "description": "Name field in the member info table"},
+          {"strategy": "text", "value": "Name:", "description": "Look for 'Name:' label and read adjacent value"}
+        ],
+        "frame": "content",
+        "description": "The member's name displayed next to the 'Name:' label"
+      },
+      "sensitive": false
+    },
+    {
+      "name": "savings_balance",
+      "type": "string",
+      "description": "The current balance of the member's savings account",
+      "extract_from": {
+        "locators": [
+          {"strategy": "xpath", "value": "//font[text()='Savings']/ancestor::tr[1]//td[3]//font/b", "description": "Balance column in the Savings row of the account table"},
+          {"strategy": "text", "value": "$", "description": "Dollar amount in the savings row"}
+        ],
+        "frame": "content",
+        "description": "The balance amount in the Savings row of the Account Summary table"
+      },
+      "sensitive": true
+    }
+  ],
+
+  "entry_url": "http://localhost:5000/member/search",
+
+  "steps": [
+    {
+      "order": 1,
+      "name": "Navigate to member search",
+      "description": "Open the member search page in the content frame",
+      "action": "navigate",
+      "risk_level": "safe",
+      "target": null,
+      "value": "http://localhost:5000/member/search",
+      "checkpoint": {
+        "type": "text_present",
+        "value": "Search Member",
+        "target": null,
+        "timeout_ms": 5000,
+        "description": "The search form heading is visible"
+      },
+      "error_detectors": [],
+      "wait_before_ms": 0,
+      "wait_after_ms": 500
+    },
+    {
+      "order": 2,
+      "name": "Enter member ID",
+      "description": "Type the member ID into the search input field",
+      "action": "type",
+      "risk_level": "safe",
+      "target": {
+        "locators": [
+          {"strategy": "css", "value": "input[name='member_id']", "description": "The member ID input field (by name attribute)"},
+          {"strategy": "xpath", "value": "//font[contains(text(),'Member ID')]/ancestor::tr//input", "description": "Input field next to 'Member ID:' label"},
+          {"strategy": "role", "value": "textbox", "description": "The text input box on the search form"}
+        ],
+        "frame": "content",
+        "description": "The Member ID text input field on the search form"
+      },
+      "value": "{{member_id}}",
+      "checkpoint": null,
+      "error_detectors": [],
+      "wait_before_ms": 300,
+      "wait_after_ms": 200
+    },
+    {
+      "order": 3,
+      "name": "Click search button",
+      "description": "Click the Search button to submit the member lookup",
+      "action": "click",
+      "risk_level": "safe",
+      "target": {
+        "locators": [
+          {"strategy": "text", "value": "Search", "description": "The 'Search' button text"},
+          {"strategy": "xpath", "value": "//font[b='Search']/ancestor::td[@onclick]", "description": "The clickable table cell containing bold 'Search' text"},
+          {"strategy": "css", "value": "td[onclick*='submit']", "description": "Table cell with submit onclick handler"}
+        ],
+        "frame": "content",
+        "description": "The Search button (a table cell styled as a button)"
+      },
+      "value": null,
+      "checkpoint": {
+        "type": "url_contains",
+        "value": "/member/results",
+        "target": null,
+        "timeout_ms": 10000,
+        "description": "Page navigated to the results URL"
+      },
+      "error_detectors": [],
+      "wait_before_ms": 200,
+      "wait_after_ms": 1000
+    },
+    {
+      "order": 4,
+      "name": "Verify member found and read results",
+      "description": "Check that the member was found (not an error page) and extract the member name and savings balance",
+      "action": "extract",
+      "risk_level": "safe",
+      "target": null,
+      "value": null,
+      "checkpoint": {
+        "type": "text_present",
+        "value": "Member Information",
+        "target": null,
+        "timeout_ms": 5000,
+        "description": "The 'Member Information' heading is visible, confirming results loaded"
+      },
+      "error_detectors": [
+        {
+          "type": "text_present",
+          "value": "No Member Found",
+          "target": null,
+          "outcome_type": "business_outcome",
+          "outcome_code": "MEMBER_NOT_FOUND",
+          "outcome_message": "No member record exists for the given Member ID",
+          "recovery_action": null
+        },
+        {
+          "type": "text_present",
+          "value": "Session Expired",
+          "target": null,
+          "outcome_type": "recoverable",
+          "outcome_code": "SESSION_EXPIRED",
+          "outcome_message": "The session timed out. Will navigate home and retry.",
+          "recovery_action": "navigate_home_and_retry"
+        },
+        {
+          "type": "text_present",
+          "value": "Access Denied",
+          "target": null,
+          "outcome_type": "business_outcome",
+          "outcome_code": "ACCESS_DENIED",
+          "outcome_message": "Operator does not have permission to view this member",
+          "recovery_action": null
+        },
+        {
+          "type": "text_present",
+          "value": "System Error",
+          "target": null,
+          "outcome_type": "hard_failure",
+          "outcome_code": "SYSTEM_ERROR",
+          "outcome_message": "The banking application returned a system error",
+          "recovery_action": null
+        }
+      ],
+      "wait_before_ms": 500,
+      "wait_after_ms": 0
+    }
+  ],
+
+  "success_condition": {
+    "type": "text_present",
+    "value": "Account Summary",
+    "target": null,
+    "timeout_ms": 5000,
+    "description": "The Account Summary table is visible, confirming we can read the member's accounts"
+  },
+
+  "global_error_detectors": [
+    {
+      "type": "text_present",
+      "value": "Session Expired",
+      "target": null,
+      "outcome_type": "recoverable",
+      "outcome_code": "SESSION_EXPIRED",
+      "outcome_message": "Session timed out during workflow execution",
+      "recovery_action": "navigate_home_and_retry"
+    },
+    {
+      "type": "text_present",
+      "value": "System Error",
+      "target": null,
+      "outcome_type": "hard_failure",
+      "outcome_code": "SYSTEM_ERROR",
+      "outcome_message": "Application-level system error occurred",
+      "recovery_action": null
+    }
+  ],
+
+  "safety_policy": {
+    "allowed_domains": ["localhost:5000", "127.0.0.1:5000"],
+    "allowed_actions": ["click", "type", "select", "navigate", "wait", "scroll", "extract", "screenshot"],
+    "max_unconfirmed_risk": "moderate",
+    "require_human_confirmation_for": ["submit", "confirm"]
+  },
+
+  "metadata": {
+    "version": "1.0.0",
+    "created_at": "2026-09-09T14:30:00Z",
+    "updated_at": "2026-09-09T14:30:00Z",
+    "recorded_by": "discovery_agent",
+    "app_name": "CreditUnion Core Back Office",
+    "app_version": "3.2.1",
+    "tenant_id": null,
+    "base_artifact_id": null,
+    "status": "draft",
+    "approval_notes": null
+  }
+}
