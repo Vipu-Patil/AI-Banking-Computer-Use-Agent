@@ -1,0 +1,374 @@
+{
+  "id": "open_sub_account",
+  "name": "Open Sub-Account for Member",
+  "description": "Navigate to a member's profile and open a new sub-account with a specified type and initial deposit. This is an irreversible financial action that creates a real account.",
+
+  "inputs": [
+    {
+      "name": "member_id",
+      "type": "string",
+      "required": true,
+      "default": null,
+      "description": "The 5-digit member ID",
+      "sensitive": false
+    },
+    {
+      "name": "account_type",
+      "type": "string",
+      "required": true,
+      "default": null,
+      "description": "Type of sub-account to open: Savings, Checking, Money Market, Holiday Club",
+      "sensitive": false
+    },
+    {
+      "name": "initial_deposit",
+      "type": "string",
+      "required": true,
+      "default": null,
+      "description": "Initial deposit amount (minimum $25.00)",
+      "sensitive": true
+    },
+    {
+      "name": "nickname",
+      "type": "string",
+      "required": false,
+      "default": "",
+      "description": "Optional nickname for the account",
+      "sensitive": false
+    }
+  ],
+
+  "outputs": [
+    {
+      "name": "new_account_number",
+      "type": "string",
+      "description": "The account number assigned to the new sub-account",
+      "extract_from": {
+        "locators": [
+          {"strategy": "xpath", "value": "//font[contains(text(),'Account Number')]/ancestor::tr[1]//td[2]//font/b", "description": "Account number in the confirmation details table"},
+          {"strategy": "text", "value": "SAV-", "description": "Account number starting with SAV- prefix"}
+        ],
+        "frame": "content",
+        "description": "The newly assigned account number on the confirmation page"
+      },
+      "sensitive": true
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "description": "The status of the new account (should be 'Active')",
+      "extract_from": {
+        "locators": [
+          {"strategy": "xpath", "value": "//font[contains(text(),'Status')]/ancestor::tr[1]//td[2]//font/b", "description": "Status field in confirmation details"}
+        ],
+        "frame": "content",
+        "description": "The account status shown on confirmation"
+      },
+      "sensitive": false
+    }
+  ],
+
+  "entry_url": "http://localhost:5000/member/search",
+
+  "steps": [
+    {
+      "order": 1,
+      "name": "Navigate to member search",
+      "description": "Start at the search page",
+      "action": "navigate",
+      "risk_level": "safe",
+      "target": null,
+      "value": "http://localhost:5000/member/search",
+      "checkpoint": {
+        "type": "text_present",
+        "value": "Search Member",
+        "timeout_ms": 5000,
+        "description": "Search form is visible"
+      },
+      "error_detectors": [],
+      "wait_before_ms": 0,
+      "wait_after_ms": 500
+    },
+    {
+      "order": 2,
+      "name": "Enter member ID",
+      "description": "Type the member ID into the search field",
+      "action": "type",
+      "risk_level": "safe",
+      "target": {
+        "locators": [
+          {"strategy": "css", "value": "input[name='member_id']", "description": "Member ID input field"},
+          {"strategy": "xpath", "value": "//font[contains(text(),'Member ID')]/ancestor::tr[1]//input", "description": "Input near Member ID label"}
+        ],
+        "frame": "content",
+        "description": "Member ID text input"
+      },
+      "value": "{{member_id}}",
+      "checkpoint": null,
+      "error_detectors": [],
+      "wait_before_ms": 300,
+      "wait_after_ms": 200
+    },
+    {
+      "order": 3,
+      "name": "Click search",
+      "description": "Submit the member search",
+      "action": "click",
+      "risk_level": "safe",
+      "target": {
+        "locators": [
+          {"strategy": "text", "value": "Search", "description": "Search button text"},
+          {"strategy": "xpath", "value": "//font[b='Search']/ancestor::td[@onclick]", "description": "Clickable Search cell"}
+        ],
+        "frame": "content",
+        "description": "The Search button"
+      },
+      "value": null,
+      "checkpoint": {
+        "type": "url_contains",
+        "value": "/member/results",
+        "timeout_ms": 10000,
+        "description": "Navigated to results page"
+      },
+      "error_detectors": [],
+      "wait_before_ms": 200,
+      "wait_after_ms": 1000
+    },
+    {
+      "order": 4,
+      "name": "Verify member found",
+      "description": "Confirm the member exists before proceeding",
+      "action": "wait",
+      "risk_level": "safe",
+      "target": null,
+      "value": null,
+      "checkpoint": {
+        "type": "text_present",
+        "value": "Member Information",
+        "timeout_ms": 5000,
+        "description": "Member info is displayed"
+      },
+      "error_detectors": [
+        {
+          "type": "text_present",
+          "value": "No Member Found",
+          "outcome_type": "business_outcome",
+          "outcome_code": "MEMBER_NOT_FOUND",
+          "outcome_message": "Cannot open sub-account: member does not exist",
+          "recovery_action": null
+        },
+        {
+          "type": "text_present",
+          "value": "Access Denied",
+          "outcome_type": "business_outcome",
+          "outcome_code": "ACCESS_DENIED",
+          "outcome_message": "Operator lacks permission to view this member",
+          "recovery_action": null
+        }
+      ],
+      "wait_before_ms": 500,
+      "wait_after_ms": 300
+    },
+    {
+      "order": 5,
+      "name": "Click Open Sub-Account",
+      "description": "Navigate to the sub-account creation form",
+      "action": "click",
+      "risk_level": "moderate",
+      "target": {
+        "locators": [
+          {"strategy": "text", "value": "Open Sub-Account", "description": "The 'Open Sub-Account' button text"},
+          {"strategy": "xpath", "value": "//font[b='Open Sub-Account']/ancestor::td[@onclick]", "description": "Clickable cell with Open Sub-Account text"}
+        ],
+        "frame": "content",
+        "description": "The Open Sub-Account button on the member details page"
+      },
+      "value": null,
+      "checkpoint": {
+        "type": "text_present",
+        "value": "Open New Sub-Account",
+        "timeout_ms": 5000,
+        "description": "The sub-account form heading is visible"
+      },
+      "error_detectors": [
+        {
+          "type": "text_present",
+          "value": "Account Frozen",
+          "outcome_type": "business_outcome",
+          "outcome_code": "ACCOUNT_FROZEN",
+          "outcome_message": "Cannot open sub-account: member's account is frozen",
+          "recovery_action": null
+        }
+      ],
+      "wait_before_ms": 200,
+      "wait_after_ms": 500
+    },
+    {
+      "order": 6,
+      "name": "Select account type",
+      "description": "Choose the type of sub-account from the dropdown",
+      "action": "select",
+      "risk_level": "safe",
+      "target": {
+        "locators": [
+          {"strategy": "css", "value": "select[name='account_type']", "description": "Account type dropdown"},
+          {"strategy": "xpath", "value": "//font[contains(text(),'Account Type')]/ancestor::tr[1]//select", "description": "Select near Account Type label"}
+        ],
+        "frame": "content",
+        "description": "The Account Type dropdown"
+      },
+      "value": "{{account_type}}",
+      "checkpoint": null,
+      "error_detectors": [],
+      "wait_before_ms": 300,
+      "wait_after_ms": 200
+    },
+    {
+      "order": 7,
+      "name": "Enter initial deposit",
+      "description": "Type the initial deposit amount",
+      "action": "type",
+      "risk_level": "safe",
+      "target": {
+        "locators": [
+          {"strategy": "css", "value": "input[name='initial_deposit']", "description": "Initial deposit input field"},
+          {"strategy": "xpath", "value": "//font[contains(text(),'Initial Deposit')]/ancestor::tr[1]//input", "description": "Input near Initial Deposit label"}
+        ],
+        "frame": "content",
+        "description": "The Initial Deposit text input"
+      },
+      "value": "{{initial_deposit}}",
+      "checkpoint": null,
+      "error_detectors": [],
+      "wait_before_ms": 200,
+      "wait_after_ms": 200
+    },
+    {
+      "order": 8,
+      "name": "Enter nickname (optional)",
+      "description": "Type an optional nickname for the account",
+      "action": "type",
+      "risk_level": "safe",
+      "target": {
+        "locators": [
+          {"strategy": "css", "value": "input[name='nickname']", "description": "Nickname input field"},
+          {"strategy": "xpath", "value": "//font[contains(text(),'Nickname')]/ancestor::tr[1]//input", "description": "Input near Nickname label"}
+        ],
+        "frame": "content",
+        "description": "The Account Nickname text input"
+      },
+      "value": "{{nickname}}",
+      "checkpoint": null,
+      "error_detectors": [],
+      "wait_before_ms": 200,
+      "wait_after_ms": 200
+    },
+    {
+      "order": 9,
+      "name": "Submit the form",
+      "description": "Click Submit to create the sub-account. THIS IS AN IRREVERSIBLE ACTION — it creates a real account.",
+      "action": "submit",
+      "risk_level": "high",
+      "target": {
+        "locators": [
+          {"strategy": "text", "value": "Submit", "description": "The Submit button text"},
+          {"strategy": "xpath", "value": "//font[b='Submit']/ancestor::td[@onclick]", "description": "Clickable Submit cell"}
+        ],
+        "frame": "content",
+        "description": "The Submit button on the sub-account form"
+      },
+      "value": null,
+      "checkpoint": {
+        "type": "url_contains",
+        "value": "confirm-subaccount",
+        "timeout_ms": 10000,
+        "description": "Redirected to confirmation page"
+      },
+      "error_detectors": [
+        {
+          "type": "text_present",
+          "value": "Please correct the following errors",
+          "outcome_type": "business_outcome",
+          "outcome_code": "VALIDATION_ERROR",
+          "outcome_message": "The form has validation errors (check inputs)",
+          "recovery_action": null
+        }
+      ],
+      "wait_before_ms": 500,
+      "wait_after_ms": 1500
+    },
+    {
+      "order": 10,
+      "name": "Verify confirmation",
+      "description": "Confirm the sub-account was created successfully and extract the new account number",
+      "action": "extract",
+      "risk_level": "safe",
+      "target": null,
+      "value": null,
+      "checkpoint": {
+        "type": "text_present",
+        "value": "Sub-Account Created Successfully",
+        "timeout_ms": 5000,
+        "description": "Success message is displayed"
+      },
+      "error_detectors": [
+        {
+          "type": "text_present",
+          "value": "Action expired or not found",
+          "outcome_type": "hard_failure",
+          "outcome_code": "ACTION_EXPIRED",
+          "outcome_message": "The action token expired before confirmation could complete",
+          "recovery_action": null
+        }
+      ],
+      "wait_before_ms": 500,
+      "wait_after_ms": 0
+    }
+  ],
+
+  "success_condition": {
+    "type": "text_present",
+    "value": "Sub-Account Created Successfully",
+    "timeout_ms": 5000,
+    "description": "The success confirmation message is displayed"
+  },
+
+  "global_error_detectors": [
+    {
+      "type": "text_present",
+      "value": "Session Expired",
+      "outcome_type": "recoverable",
+      "outcome_code": "SESSION_EXPIRED",
+      "outcome_message": "Session timed out during sub-account creation",
+      "recovery_action": "navigate_home_and_retry"
+    },
+    {
+      "type": "text_present",
+      "value": "System Error",
+      "outcome_type": "hard_failure",
+      "outcome_code": "SYSTEM_ERROR",
+      "outcome_message": "Application returned a system error",
+      "recovery_action": null
+    }
+  ],
+
+  "safety_policy": {
+    "allowed_domains": ["localhost:5000", "127.0.0.1:5000"],
+    "allowed_actions": ["click", "type", "select", "navigate", "wait", "scroll", "extract", "screenshot", "submit", "confirm"],
+    "max_unconfirmed_risk": "moderate",
+    "require_human_confirmation_for": ["submit", "confirm"]
+  },
+
+  "metadata": {
+    "version": "1.0.0",
+    "created_at": "2026-09-09T15:00:00Z",
+    "updated_at": "2026-09-09T15:00:00Z",
+    "recorded_by": "discovery_agent",
+    "app_name": "CreditUnion Core Back Office",
+    "app_version": "3.2.1",
+    "tenant_id": null,
+    "base_artifact_id": null,
+    "status": "draft",
+    "approval_notes": null
+  }
+}
