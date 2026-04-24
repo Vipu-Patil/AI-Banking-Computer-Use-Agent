@@ -1,0 +1,121 @@
+{
+  "id": "lookup_member_balance_discovered",
+  "name": "Look up member balance (auto-discovered)",
+  "description": "Discovered automatically by the LLM agent, no hand-written steps.",
+  "inputs": [
+    {
+      "name": "member_id",
+      "type": "string",
+      "required": true,
+      "default": null,
+      "description": "",
+      "sensitive": false
+    }
+  ],
+  "outputs": [],
+  "entry_url": "http://localhost:5000/member/search",
+  "steps": [
+    {
+      "order": 1,
+      "name": "Navigate to entry URL",
+      "description": "",
+      "action": "navigate",
+      "risk_level": "safe",
+      "target": null,
+      "value": "http://localhost:5000/member/search",
+      "checkpoint": null,
+      "error_detectors": [],
+      "wait_before_ms": 500,
+      "wait_after_ms": 500
+    },
+    {
+      "order": 2,
+      "name": "type (<input>)",
+      "description": "",
+      "action": "type",
+      "risk_level": "safe",
+      "target": {
+        "locators": [
+          {
+            "strategy": "css",
+            "value": "input[name='member_id']",
+            "description": ""
+          }
+        ],
+        "frame": null,
+        "description": "<input>"
+      },
+      "value": "{{member_id}}",
+      "checkpoint": null,
+      "error_detectors": [],
+      "wait_before_ms": 500,
+      "wait_after_ms": 500
+    },
+    {
+      "order": 3,
+      "name": "click (Search)",
+      "description": "",
+      "action": "click",
+      "risk_level": "safe",
+      "target": {
+        "locators": [
+          {
+            "strategy": "text",
+            "value": "Search",
+            "description": ""
+          }
+        ],
+        "frame": null,
+        "description": "Search"
+      },
+      "value": null,
+      "checkpoint": null,
+      "error_detectors": [],
+      "wait_before_ms": 500,
+      "wait_after_ms": 500
+    }
+  ],
+  "success_condition": {
+    "type": "text_present",
+    "value": "Savings",
+    "target": null,
+    "timeout_ms": 5000,
+    "description": "Savings balance is visible on the results page after search."
+  },
+  "global_error_detectors": [],
+  "safety_policy": {
+    "allowed_domains": [
+      "localhost:5000",
+      "127.0.0.1:5000"
+    ],
+    "allowed_actions": [
+      "click",
+      "type",
+      "select",
+      "navigate",
+      "wait",
+      "scroll",
+      "extract",
+      "screenshot",
+      "submit",
+      "confirm"
+    ],
+    "max_unconfirmed_risk": "moderate",
+    "require_human_confirmation_for": [
+      "submit",
+      "confirm"
+    ]
+  },
+  "metadata": {
+    "version": "0.1.0",
+    "created_at": "2026-10-20T23:55:13.786948+00:00",
+    "updated_at": "2026-10-20T23:55:13.786948+00:00",
+    "recorded_by": "discovery_agent",
+    "app_name": "",
+    "app_version": "",
+    "tenant_id": null,
+    "base_artifact_id": null,
+    "status": "draft",
+    "approval_notes": null
+  }
+}
